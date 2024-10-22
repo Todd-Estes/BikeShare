@@ -6,6 +6,9 @@ CITY_DATA = { 'chicago': 'chicago.csv',
               'new york city': 'new_york_city.csv',
               'washington': 'washington.csv' }
 
+MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
+DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+
 def get_filters():
     """
     Asks user to specify a city, month, and day to analyze.
@@ -57,27 +60,33 @@ def load_data(city, month, day):
     Returns:
         df - Pandas DataFrame containing city data filtered by month and day
     """
-    df = pd.read_csv(f'{city}.csv')
+    formatted_city = city.replace(' ', '_')
+    df = pd.read_csv(f'{formatted_city}.csv')
+
     df['Start Time'] = pd.to_datetime(df['Start Time'])
     df['Month'] = df['Start Time'].dt.month
-    df['Day of Week'] = df['Start Time'].dt.day_name()
+    df['Day of Week'] = df['Start Time'].dt.weekday
+    df['Start Hour'] = df['Start Time'].dt.hour
     
     return df
 
 
-# def time_stats(df):
+def time_stats(df):
     """Displays statistics on the most frequent times of travel."""
 
     print('\nCalculating The Most Frequent Times of Travel...\n')
     start_time = time.time()
 
     # display the most common month
-
+    mcm = (df['Month'].mode()[0]) - 1
+    print('Most common month of travel: ', MONTHS[mcm])
 
     # display the most common day of week
-
-
+    mcd = (df['Day of Week'].mode()[0])
+    print('Most common day of travel: ', DAYS[mcd])
     # display the most common start hour
+    mch = (df['Start Hour'].mode()[0])
+    print('Most common start hour: ', mch)
 
 
     print("\nThis took %s seconds." % (time.time() - start_time))
@@ -143,7 +152,7 @@ def main():
         city, month, day = get_filters()
         df = load_data(city, month, day)
         print(df.info())
-        # time_stats(df)
+        time_stats(df)
         # station_stats(df)
         # trip_duration_stats(df)
         # user_stats(df)
