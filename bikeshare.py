@@ -1,6 +1,7 @@
 import time
 import pandas as pd
 import numpy as np
+from collections import Counter
 
 CITY_DATA = { 'chicago': 'chicago.csv',
               'new york city': 'new_york_city.csv',
@@ -84,26 +85,32 @@ def time_stats(df):
     # display the most common day of week
     mcd = (df['Day of Week'].mode()[0])
     print('Most common day of travel: ', DAYS[mcd])
+
     # display the most common start hour
     mch = (df['Start Hour'].mode()[0])
     print('Most common start hour: ', mch)
 
-
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
+def most_common_station(df, station_type):
+    stations = df[station_type].values
+    counter = Counter(stations)
+    sorted_stations = sorted(stations, key=lambda x: counter[x], reverse=True)
 
-# def station_stats(df):
+    return sorted_stations[0]
+
+def station_stats(df):
     """Displays statistics on the most popular stations and trip."""
 
     print('\nCalculating The Most Popular Stations and Trip...\n')
     start_time = time.time()
 
     # display most commonly used start station
-
+    print('Most commonly used start station: ', most_common_station(df, 'Start Station'))
 
     # display most commonly used end station
-
+    print('Most commonly used end station: ', most_common_station(df, 'End Station'))
 
     # display most frequent combination of start station and end station trip
 
@@ -112,17 +119,17 @@ def time_stats(df):
     print('-'*40)
 
 
-# def trip_duration_stats(df):
+def trip_duration_stats(df):
     """Displays statistics on the total and average trip duration."""
 
     print('\nCalculating Trip Duration...\n')
     start_time = time.time()
 
     # display total travel time
-
+    print('Approimate total travel time of all passengers, in minutes: ', round(df['Trip Duration'].sum() / 60))
 
     # display mean travel time
-
+    print('Approximate average travel time for all passengers, in minutes: ', round(df['Trip Duration'].mean() / 60))
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -153,8 +160,8 @@ def main():
         df = load_data(city, month, day)
         print(df.info())
         time_stats(df)
-        # station_stats(df)
-        # trip_duration_stats(df)
+        station_stats(df)
+        trip_duration_stats(df)
         # user_stats(df)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
