@@ -61,6 +61,7 @@ def load_data(city, month, day):
     Returns:
         df - Pandas DataFrame containing city data filtered by month and day
     """
+    # TODO IMPLEMENT FILTERS
     formatted_city = city.replace(' ', '_')
     df = pd.read_csv(f'{formatted_city}.csv')
 
@@ -113,7 +114,7 @@ def station_stats(df):
     print('Most commonly used end station: ', most_common_station(df, 'End Station'))
 
     # display most frequent combination of start station and end station trip
-
+    # TODO FINISH THIS^, and refactor first two data statements
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -135,20 +136,28 @@ def trip_duration_stats(df):
     print('-'*40)
 
 
-# def user_stats(df):
+def user_stats(df):
     """Displays statistics on bikeshare users."""
 
     print('\nCalculating User Stats...\n')
     start_time = time.time()
 
     # Display counts of user types
+    user_types = df['User Type'].unique()
+    for ut in user_types:
+        print(f'Total {ut} type users: ', df['User Type'].value_counts()[ut])
 
 
     # Display counts of gender
-
+    df['Gender'] = df['Gender'].fillna('undisclosed gender')
+    genders = df['Gender'].unique()
+    for g in genders:
+        print(f'Total {g} users: ', df['Gender'].value_counts()[g])
 
     # Display earliest, most recent, and most common year of birth
-
+    print('Earliest user DOB: ', df['Birth Year'].min())
+    print('Most recent user DOB: ', df['Birth Year'].max())
+    print('Most common user DOB: ', df['Birth Year'].mode()[0])
 
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
@@ -162,7 +171,7 @@ def main():
         time_stats(df)
         station_stats(df)
         trip_duration_stats(df)
-        # user_stats(df)
+        user_stats(df)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
