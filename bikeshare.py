@@ -6,9 +6,8 @@ from collections import Counter
 CITY_DATA = { 'chicago': 'chicago.csv',
               'new york city': 'new_york_city.csv',
               'washington': 'washington.csv' }
-
-MONTHS = ['January', 'February', 'March', 'April', 'May', 'June']
-DAYS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+MONTHS = ['january', 'february', 'march', 'april', 'may', 'june']
+DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
 
 def get_filters():
     """
@@ -29,20 +28,17 @@ def get_filters():
             break
         print("Invalid input. Please try again.")
 
-    months = ['all', 'january', 'february', 'march', 'april', 'may', 'june']
     while True:
         month = input("Enter a month (all, january, february, ..., june): ").lower()
-        if month in months:
+        if month in MONTHS or month == 'all':
             break
-        print("Invalid input. Please try again.")
+        print("Invalid month input. Please try again.")
 
-
-    days = ['all', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
     while True:
         day = input("Enter a day of the week (all, monday, tuesday, ..., sunday): ").lower()
-        if day in days:
+        if day in DAYS or day == 'all':
             break
-        print("Invalid input. Please try again.")
+        print("Invalid day input. Please try again.")
 
 
 
@@ -61,7 +57,6 @@ def load_data(city, month, day):
     Returns:
         df - Pandas DataFrame containing city data filtered by month and day
     """
-    # TODO IMPLEMENT FILTERS
     formatted_city = city.replace(' ', '_')
     df = pd.read_csv(f'{formatted_city}.csv')
 
@@ -69,6 +64,14 @@ def load_data(city, month, day):
     df['Month'] = df['Start Time'].dt.month
     df['Day of Week'] = df['Start Time'].dt.weekday
     df['Start Hour'] = df['Start Time'].dt.hour
+
+    # Filter by month if specified
+    if month != 'all':
+        df = df[df['Start Time'].dt.month_name() == month.title()]
+
+    # Filter by day if specified
+    if day != 'all':
+        df = df[df['Day of Week'] == DAYS.index(day)]
     
     return df
 
