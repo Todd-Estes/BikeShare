@@ -1,6 +1,5 @@
 import time
 import pandas as pd
-import numpy as np
 from collections import Counter
 
 CITY_DATA = { 'chicago': 'chicago.csv',
@@ -8,6 +7,7 @@ CITY_DATA = { 'chicago': 'chicago.csv',
               'washington': 'washington.csv' }
 MONTHS = ['january', 'february', 'march', 'april', 'may', 'june']
 DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+
 
 def get_filters():
     """
@@ -94,12 +94,6 @@ def time_stats(df):
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
-def most_common_station(df, station_type):
-    stations = df[station_type].values
-    counter = Counter(stations)
-    sorted_stations = sorted(stations, key=lambda x: counter[x], reverse=True)
-
-    return sorted_stations[0]
 
 def station_stats(df):
     """Displays statistics on the most popular stations and trip."""
@@ -108,22 +102,12 @@ def station_stats(df):
     start_time = time.time()
 
     # display most commonly used start station
-    print('Most commonly used start station: ', most_common_station(df, 'Start Station'))
-
-
-    # most_common_start_station = df.groupby(['Start Station']).size().sort_values(ascending=False)
-    #print('Most commonly used start station: ', most_common_start_station.index[0])
-
-
+    most_common_start_station = df.groupby(['Start Station']).size().sort_values(ascending=False)
+    print('Most commonly used start station: ', most_common_start_station.index[0])
 
     # display most commonly used end station
-
-
-    # most_common_end_station = df.groupby(['Start Station']).size().sort_values(ascending=False)
-    # print('Most commonly used end station: ', most_common_end_station.index[0])
-
-
-    print('Most commonly used end station: ', most_common_station(df, 'End Station'))
+    most_common_end_station = df.groupby(['Start Station']).size().sort_values(ascending=False)
+    print('Most commonly used end station: ', most_common_end_station.index[0])
 
     # display most frequent combination of start station and end station trip
     common_routes = df.groupby(['Start Station', 'End Station']).size().sort_values(ascending=False)
@@ -182,6 +166,8 @@ def user_stats(df):
 
 
 def prompt_raw_data(df):
+    """Asks if user wants to see raw data in 5-line increments"""
+
     print('You have the option to inspect individual lines of raw data from the data set you requested...')
     start_loc = 0
     while True:
